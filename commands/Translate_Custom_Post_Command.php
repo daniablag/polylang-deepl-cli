@@ -86,4 +86,3 @@ class Translate_Custom_Post_Command {
         WP_CLI::success("Все записи типа {$post_type} переведены.");
     }
 }
-?>

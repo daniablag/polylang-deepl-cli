@@ -1,6 +1,8 @@
 <?php
 
-function translate_single_category_term($term, $lang_to = PLL_DEEPL_LANG_TO) {
+function translate_single_category_term($term, $lang_to = null) {
+    $lang_to = $lang_to ?: pll_deepl_get_lang_to();
+
     $taxonomy = 'product_cat';
     $lang_from = pll_get_term_language($term->term_id);
 

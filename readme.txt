@@ -13,6 +13,7 @@ WP-CLI команды для перевода товаров, категорий
 
 Плагин добавляет команды WP-CLI для автоматического перевода:
 
+
 * `wp translate-product <id>` — переводит товар с учетом Spectra-блоков, описания и всех метаполей
 * wp translate-all-products - переводит все товары
 * `wp translate-product-category <id>` — переводит категорию товара, включая родительскую, если нужно
@@ -39,8 +40,9 @@ WP-CLI команды для перевода товаров, категорий
 1. Скопируйте папку плагина `polylang-deepl-cli` в `/wp-content/plugins/`
 2. Активируйте плагин через админку WordPress
 3. Убедитесь, что в Polylang настроен API-ключ DeepL (`pll_settings['machine_translation_services']['deepl']['api_key']`)
-4. Вставьте API-ключ DeepL в $key основного файла плагина
-5. Используйте WP-CLI команды:
+4. Настройте исходный и целевой языки в меню «Языки → Auto translate»
+5. Вставьте API-ключ DeepL в $key основного файла плагина
+6. Используйте WP-CLI команды:
 
 wp translate-product 123
 wp translate-product-category 456

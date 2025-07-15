@@ -2,8 +2,9 @@
 
 WP_CLI::add_command('translate-menu', function ($args) {
     $menu_id   = 8;
-    $lang_from = PLL_DEEPL_LANG_FROM;
-    $lang_to   = PLL_DEEPL_LANG_TO;
+  
+    $lang_from = pll_deepl_get_lang_from();
+    $lang_to   = pll_deepl_get_lang_to();
 
     $menu = wp_get_nav_menu_object($menu_id);
     if (!$menu) {
@@ -49,7 +50,7 @@ WP_CLI::add_command('translate-menu', function ($args) {
         }
 
         try {
-            $title = retry_with_timeout(fn() => deepl_translates($item->title, $lang_from, $lang_to));
+            $title = retry_with_timeout(fn() => deepl_translate($item->title, $lang_from, $lang_to));
         } catch (Exception $e) {
             $title = $item->title;
             WP_CLI::warning("⚠️ Не удалось перевести '{$item->title}': {$e->getMessage()}");
@@ -62,7 +63,7 @@ WP_CLI::add_command('translate-menu', function ($args) {
             'menu-item-object-id' => $translated_object_id ?: $item->object_id,
             'menu-item-type'      => $item->type,
             'menu-item-status'    => 'publish',
-            'menu-item-menu-item-parent-id' => 0,
+            'menu-item-parent-id' => 0,
         ];
 
         if (!empty($item->menu_item_parent) && isset($id_map[$item->menu_item_parent])) {

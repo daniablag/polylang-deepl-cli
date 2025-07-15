@@ -39,15 +39,17 @@ function pll_deepl_register_settings() {
 
 add_action('admin_menu', 'pll_deepl_add_admin_page');
 function pll_deepl_add_admin_page() {
-    add_submenu_page(
-        'pll_languages',
-        'Auto translate',
-        'Auto translate',
-        'manage_options',
-        'pll-deepl-auto',
-        'pll_deepl_render_page'
+    add_menu_page(
+        'DeepL Auto Translate',     // Заголовок страницы
+        'Auto Translate',           // Название в меню
+        'manage_options',           // Права доступа
+        'pll-deepl-auto',           // Slug
+        'pll_deepl_render_page',    // Функция
+        'dashicons-translation',    // Иконка
+        60                          // Позиция
     );
 }
+
 
 function pll_deepl_render_page() { ?>
     <div class="wrap">

@@ -2,8 +2,8 @@
 
 WP_CLI::add_command('translate-menu', function ($args) {
     $menu_id   = 8;
-    $lang_from = PLL_DEEPL_LANG_FROM;
-    $lang_to   = PLL_DEEPL_LANG_TO;
+    $lang_from = pll_deepl_get_lang_from();
+    $lang_to   = pll_deepl_get_lang_to();
 
     $menu = wp_get_nav_menu_object($menu_id);
     if (!$menu) {

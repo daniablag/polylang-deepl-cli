@@ -13,6 +13,62 @@ if (!defined('PLL_DEEPL_LANG_TO')) {
     define('PLL_DEEPL_LANG_TO', 'en');
 }
 
+/**
+ * Получить код исходного языка.
+ * Приоритет: опция WordPress -> константа.
+ */
+function pll_deepl_get_lang_from() {
+    $opt = get_option('pll_deepl_lang_from');
+    return $opt ? $opt : PLL_DEEPL_LANG_FROM;
+}
+
+/**
+ * Получить код языка перевода.
+ * Приоритет: опция WordPress -> константа.
+ */
+function pll_deepl_get_lang_to() {
+    $opt = get_option('pll_deepl_lang_to');
+    return $opt ? $opt : PLL_DEEPL_LANG_TO;
+}
+
+add_action('admin_init', 'pll_deepl_register_settings');
+function pll_deepl_register_settings() {
+    register_setting('pll_deepl_settings', 'pll_deepl_lang_from');
+    register_setting('pll_deepl_settings', 'pll_deepl_lang_to');
+}
+
+add_action('admin_menu', 'pll_deepl_add_admin_page');
+function pll_deepl_add_admin_page() {
+    add_submenu_page(
+        'pll_languages',
+        'Auto translate',
+        'Auto translate',
+        'manage_options',
+        'pll-deepl-auto',
+        'pll_deepl_render_page'
+    );
+}
+
+function pll_deepl_render_page() { ?>
+    <div class="wrap">
+        <h1><?php esc_html_e('Auto translate', 'polylang-deepl-cli'); ?></h1>
+        <form method="post" action="options.php">
+            <?php settings_fields('pll_deepl_settings'); ?>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row"><label for="pll_deepl_lang_from"><?php esc_html_e('Translate from', 'polylang-deepl-cli'); ?></label></th>
+                    <td><input name="pll_deepl_lang_from" id="pll_deepl_lang_from" type="text" value="<?php echo esc_attr( get_option('pll_deepl_lang_from', PLL_DEEPL_LANG_FROM) ); ?>" class="regular-text" /></td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="pll_deepl_lang_to"><?php esc_html_e('Translate to', 'polylang-deepl-cli'); ?></label></th>
+                    <td><input name="pll_deepl_lang_to" id="pll_deepl_lang_to" type="text" value="<?php echo esc_attr( get_option('pll_deepl_lang_to', PLL_DEEPL_LANG_TO) ); ?>" class="regular-text" /></td>
+                </tr>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+<?php }
+
 function translate_preserving_tags($html, $lang_from, $lang_to) {
     $doc = new DOMDocument();
     libxml_use_internal_errors(true);

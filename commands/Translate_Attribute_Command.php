@@ -42,7 +42,7 @@ function translate_attribute_terms_by_taxonomy($taxonomy) {
         return;
     }
 
-    $lang_to = PLL_DEEPL_LANG_TO;
+    $lang_to = pll_deepl_get_lang_to();
     $log_file = WP_CONTENT_DIR . '/translation-skipped.log';
 
     foreach ($terms as $term) {

@@ -9,7 +9,7 @@ WP_CLI::add_command('translate-post', function ($args) {
     }
 
     $lang_from = pll_get_post_language($post_id);
-    $lang_to = 'en';
+    $lang_to = PLL_DEEPL_LANG_TO;
 
     if (!$lang_from || $lang_from === $lang_to) {
         WP_CLI::error("Исходный язык не определён или совпадает с целевым.");
@@ -168,12 +168,12 @@ WP_CLI::add_command('translate-post', function ($args) {
 });
 
 WP_CLI::add_command('translate-all-products', function () {
-    $lang_to = 'en';
+    $lang_to = PLL_DEEPL_LANG_TO;
     $products = get_posts([
         'post_type'      => 'product',
         'posts_per_page' => -1,
         'post_status'    => 'publish',
-        'lang'           => 'uk'
+        'lang'           => PLL_DEEPL_LANG_FROM
     ]);
 
     foreach ($products as $product) {

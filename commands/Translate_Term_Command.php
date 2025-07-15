@@ -2,6 +2,7 @@
 
 function translate_single_category_term($term, $lang_to = null) {
     $lang_to = $lang_to ?: pll_deepl_get_lang_to();
+
     $taxonomy = 'product_cat';
     $lang_from = pll_get_term_language($term->term_id);
 
@@ -61,7 +62,7 @@ function translate_single_category_term($term, $lang_to = null) {
     }
 }
 
-WP_CLI::add_command('translate-term', function ($args) {
+WP_CLI::add_command('translate-product-category', function ($args) {
     $term_id = (int) $args[0];
     $taxonomy = 'product_cat';
 
@@ -73,7 +74,7 @@ WP_CLI::add_command('translate-term', function ($args) {
     translate_single_category_term($term);
 });
 
-WP_CLI::add_command('translate-all-categories', function () {
+WP_CLI::add_command('translate-all-product-categories', function () {
     $taxonomy = 'product_cat';
     $terms = get_terms([
         'taxonomy'   => $taxonomy,

@@ -1,6 +1,6 @@
 <?php
 
-WP_CLI::add_command('translate-attribute', function ($args) {
+WP_CLI::add_command('translate-attribute-values', function ($args) {
     $attribute_id = (int) $args[0];
 
     global $wpdb;
@@ -14,7 +14,7 @@ WP_CLI::add_command('translate-attribute', function ($args) {
     translate_attribute_terms_by_taxonomy($taxonomy);
 });
 
-WP_CLI::add_command('translate-all-attributes', function () {
+WP_CLI::add_command('translate-all-attribute-values', function () {
     global $wpdb;
     $results = $wpdb->get_results("SELECT attribute_name FROM {$wpdb->prefix}woocommerce_attribute_taxonomies");
 
@@ -43,6 +43,7 @@ function translate_attribute_terms_by_taxonomy($taxonomy) {
     }
 
     $lang_to = pll_deepl_get_lang_to();
+
     $log_file = WP_CONTENT_DIR . '/translation-skipped.log';
 
     foreach ($terms as $term) {

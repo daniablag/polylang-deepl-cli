@@ -22,6 +22,7 @@ class Translate_Taxonomy_By_ID_Command {
      */
     public function __invoke($args, $assoc_args) {
         list($term_id) = $args;
+      
         $lang_from = pll_deepl_get_lang_from();
         $lang_to   = pll_deepl_get_lang_to();
 
@@ -77,6 +78,7 @@ class Translate_All_Taxonomies_Command {
      * wp translate-all-taxonomies --lang_from=uk --lang_to=en
      */
     public function __invoke($args, $assoc_args) {
+
         $lang_from = pll_deepl_get_lang_from();
         $lang_to   = pll_deepl_get_lang_to();
 

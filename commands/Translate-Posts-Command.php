@@ -1,6 +1,6 @@
 <?php
 
-WP_CLI::add_command('translate-post', function ($args) {
+WP_CLI::add_command('translate-product', function ($args) {
     $post_id = (int) $args[0];
     $post = get_post($post_id);
 
@@ -179,7 +179,7 @@ WP_CLI::add_command('translate-all-products', function () {
     foreach ($products as $product) {
         WP_CLI::log("🔄 Перевод товара ID {$product->ID}");
         try {
-            WP_CLI::runcommand("translate-post {$product->ID}");
+            WP_CLI::runcommand("translate-product {$product->ID}");
             sleep(1);
         } catch (Exception $e) {
             WP_CLI::warning("⚠️ Ошибка при переводе товара {$product->ID}: " . $e->getMessage());

@@ -6,6 +6,7 @@ if (defined('WP_CLI') && WP_CLI) {
 class Translate_Page_Command {
     public function __invoke($args, $assoc_args) {
         list($post_id) = $args;
+
         $lang_from = pll_deepl_get_lang_from();
         $lang_to   = pll_deepl_get_lang_to();
 

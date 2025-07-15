@@ -13,16 +13,20 @@ WP-CLI команды для перевода товаров, категорий
 
 Плагин добавляет команды WP-CLI для автоматического перевода:
 
-* `wp translate-post <id>` — переводит товар с учетом Spectra-блоков, описания и всех метаполей
+
+* `wp translate-product <id>` — переводит товар с учетом Spectra-блоков, описания и всех метаполей
 * wp translate-all-products - переводит все товары
-* `wp translate-term <id>` — переводит категорию товара, включая родительскую, если нужно
-* wp translate-all-categories - Перевод всех категорий
-* `wp translate-attribute-term <id>` — переводит значение атрибута (например, цвет, размер)
-* wp translate-attribute id - перевод всех значений выбранного аттрибута
-* wp translate-all-attributes - перевод всех аттрибутов
+* `wp translate-product-category <id>` — переводит категорию товара, включая родительскую, если нужно
+* wp translate-all-product-categories - Перевод всех категорий
+* `wp translate-attribute-value <id>` — переводит значение атрибута (например, цвет, размер)
+* wp translate-attribute-values <id> - перевод всех значений выбранного аттрибута
+* wp translate-all-attribute-values - перевод всех аттрибутов
 * wp translate-woocommerce - переводит все категории, затем значения аттрибутов, затем все товары.
 * wp translate-custom-post <id> - перевод произвольного типа записи (например popup)
 * wp translate-all-custom-posts <post_type> - массовый перевод всех записей указанного типа
+* wp translate-post-category <term_id> - перевод категории поста по айди
+* wp translate-all-post-categories - перевод всех категорий постов
+
 
 Поддерживает:
 - проверку наличия перевода
@@ -40,9 +44,9 @@ WP-CLI команды для перевода товаров, категорий
 5. Вставьте API-ключ DeepL в $key основного файла плагина
 6. Используйте WP-CLI команды:
 
-wp translate-post 123
-wp translate-term 456
-wp translate-attribute-term 789
+wp translate-product 123
+wp translate-product-category 456
+wp translate-attribute-value 789
 
 
 == Требования ==

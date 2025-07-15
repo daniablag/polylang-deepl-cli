@@ -1,6 +1,6 @@
 <?php
 
-WP_CLI::add_command('translate-attribute-term', function ($args) {
+WP_CLI::add_command('translate-attribute-value', function ($args) {
     $term_id = (int) $args[0];
     $term = get_term($term_id);
 

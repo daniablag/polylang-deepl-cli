@@ -72,9 +72,10 @@ if (defined('WP_CLI') && WP_CLI) {
 	require_once __DIR__ . '/commands/Translate_Attribute_Command.php';
 	require_once __DIR__ . '/commands/translate-woocommerce.php';
 	require_once __DIR__ . '/commands/Translate-Posts-Command.php';
-	require_once __DIR__ . '/commands/Translate_Taxonomies_Command.php';
-	require_once __DIR__ . '/commands/Translate_Page_Command.php';
-	require_once __DIR__ . '/commands/Translate_Menu_Command.php';
+    require_once __DIR__ . '/commands/Translate_Taxonomies_Command.php';
+    require_once __DIR__ . '/commands/Translate_Page_Command.php';
+    require_once __DIR__ . '/commands/Translate_Menu_Command.php';
+    require_once __DIR__ . '/commands/Translate_Custom_Post_Command.php';
 
 }
 

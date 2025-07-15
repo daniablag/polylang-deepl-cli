@@ -1,6 +1,6 @@
 <?php
 
-function translate_single_category_term($term, $lang_to = 'en') {
+function translate_single_category_term($term, $lang_to = PLL_DEEPL_LANG_TO) {
     $taxonomy = 'product_cat';
     $lang_from = pll_get_term_language($term->term_id);
 
@@ -44,6 +44,13 @@ function translate_single_category_term($term, $lang_to = 'en') {
             $lang_to   => $new_term_id,
         ]);
 
+        // ✅ Перенос custom_term_meta (HTML с тегами сохраняется)
+        $custom_content = get_term_meta($term->term_id, 'custom_term_meta', true);
+        if (!empty($custom_content)) {
+            $translated_content = translate_preserving_tags($custom_content, $lang_from, $lang_to);
+            update_term_meta($new_term_id, 'custom_term_meta', wp_kses_post($translated_content));
+        }
+
         // 🛠 Принудительно обновляем термин (для иерархии и отображения в списке)
         wp_update_term($new_term_id, $taxonomy, []);
 
@@ -53,7 +60,7 @@ function translate_single_category_term($term, $lang_to = 'en') {
     }
 }
 
-WP_CLI::add_command('translate-term', function ($args) {
+WP_CLI::add_command('translate-product-category', function ($args) {
     $term_id = (int) $args[0];
     $taxonomy = 'product_cat';
 
@@ -65,7 +72,7 @@ WP_CLI::add_command('translate-term', function ($args) {
     translate_single_category_term($term);
 });
 
-WP_CLI::add_command('translate-all-categories', function () {
+WP_CLI::add_command('translate-all-product-categories', function () {
     $taxonomy = 'product_cat';
     $terms = get_terms([
         'taxonomy'   => $taxonomy,

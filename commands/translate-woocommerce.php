@@ -4,10 +4,10 @@ WP_CLI::add_command('translate-woocommerce', function () {
     WP_CLI::log("🌐 Запуск комплексного перевода WooCommerce…");
 
     WP_CLI::log("📁 Перевод категорий...");
-    WP_CLI::runcommand("translate-all-categories");
+    WP_CLI::runcommand("translate-all-product-categories");
 
     WP_CLI::log("🔣 Перевод атрибутов и значений...");
-    WP_CLI::runcommand("translate-all-attributes");
+    WP_CLI::runcommand("translate-all-attribute-values");
 
     WP_CLI::log("🛒 Перевод товаров...");
     WP_CLI::runcommand("translate-all-products");

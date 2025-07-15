@@ -1,6 +1,6 @@
 <?php
 
-WP_CLI::add_command('translate-post', function ($args) {
+WP_CLI::add_command('translate-product', function ($args) {
     $post_id = (int) $args[0];
     $post = get_post($post_id);
 
@@ -9,7 +9,7 @@ WP_CLI::add_command('translate-post', function ($args) {
     }
 
     $lang_from = pll_get_post_language($post_id);
-    $lang_to = 'en';
+    $lang_to = PLL_DEEPL_LANG_TO;
 
     if (!$lang_from || $lang_from === $lang_to) {
         WP_CLI::error("Исходный язык не определён или совпадает с целевым.");
@@ -168,18 +168,18 @@ WP_CLI::add_command('translate-post', function ($args) {
 });
 
 WP_CLI::add_command('translate-all-products', function () {
-    $lang_to = 'en';
+    $lang_to = PLL_DEEPL_LANG_TO;
     $products = get_posts([
         'post_type'      => 'product',
         'posts_per_page' => -1,
         'post_status'    => 'publish',
-        'lang'           => 'uk'
+        'lang'           => PLL_DEEPL_LANG_FROM
     ]);
 
     foreach ($products as $product) {
         WP_CLI::log("🔄 Перевод товара ID {$product->ID}");
         try {
-            WP_CLI::runcommand("translate-post {$product->ID}");
+            WP_CLI::runcommand("translate-product {$product->ID}");
             sleep(1);
         } catch (Exception $e) {
             WP_CLI::warning("⚠️ Ошибка при переводе товара {$product->ID}: " . $e->getMessage());

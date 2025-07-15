@@ -22,8 +22,8 @@ class Translate_Taxonomy_By_ID_Command {
      */
     public function __invoke($args, $assoc_args) {
         list($term_id) = $args;
-        $lang_from = $assoc_args['lang_from'] ?? 'uk';
-        $lang_to = $assoc_args['lang_to'] ?? 'en';
+        $lang_from = PLL_DEEPL_LANG_FROM;
+        $lang_to   = PLL_DEEPL_LANG_TO;
 
         $term = get_term($term_id);
         if (!$term || is_wp_error($term)) {
@@ -77,8 +77,8 @@ class Translate_All_Taxonomies_Command {
      * wp translate-all-taxonomies --lang_from=uk --lang_to=en
      */
     public function __invoke($args, $assoc_args) {
-        $lang_from = $assoc_args['lang_from'] ?? 'uk';
-        $lang_to = $assoc_args['lang_to'] ?? 'en';
+        $lang_from = PLL_DEEPL_LANG_FROM;
+        $lang_to   = PLL_DEEPL_LANG_TO;
 
         $taxonomies = get_taxonomies([], 'names');
         foreach ($taxonomies as $taxonomy) {

@@ -1,9 +1,9 @@
 <?php
 
 WP_CLI::add_command('translate-menu', function ($args) {
-    $menu_id = 8;
-    $lang_from = 'uk';
-    $lang_to = 'en';
+    $menu_id   = 8;
+    $lang_from = PLL_DEEPL_LANG_FROM;
+    $lang_to   = PLL_DEEPL_LANG_TO;
 
     $menu = wp_get_nav_menu_object($menu_id);
     if (!$menu) {

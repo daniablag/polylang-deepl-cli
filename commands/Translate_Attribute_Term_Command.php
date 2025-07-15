@@ -13,7 +13,7 @@ WP_CLI::add_command('translate-attribute-term', function ($args) {
     }
 
     $lang_from = pll_get_term_language($term_id);
-    $lang_to = 'en';
+    $lang_to   = PLL_DEEPL_LANG_TO;
 
     ensure_language_exists($lang_from);
     ensure_language_exists($lang_to);

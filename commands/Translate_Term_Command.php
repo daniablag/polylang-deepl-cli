@@ -1,6 +1,6 @@
 <?php
 
-function translate_single_category_term($term, $lang_to = 'en') {
+function translate_single_category_term($term, $lang_to = PLL_DEEPL_LANG_TO) {
     $taxonomy = 'product_cat';
     $lang_from = pll_get_term_language($term->term_id);
 

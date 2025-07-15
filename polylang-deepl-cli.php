@@ -2,7 +2,16 @@
 /**
  * Plugin Name: Polylang + DeepL CLI Translator
  * Description: Команды WP-CLI для перевода товаров, категорий и атрибутов через Polylang и DeepL с улучшениями.
- */
+*/
+
+// Global translation languages
+if (!defined('PLL_DEEPL_LANG_FROM')) {
+    define('PLL_DEEPL_LANG_FROM', 'uk');
+}
+
+if (!defined('PLL_DEEPL_LANG_TO')) {
+    define('PLL_DEEPL_LANG_TO', 'en');
+}
 
 function translate_preserving_tags($html, $lang_from, $lang_to) {
     $doc = new DOMDocument();
@@ -63,9 +72,10 @@ if (defined('WP_CLI') && WP_CLI) {
 	require_once __DIR__ . '/commands/Translate_Attribute_Command.php';
 	require_once __DIR__ . '/commands/translate-woocommerce.php';
 	require_once __DIR__ . '/commands/Translate-Posts-Command.php';
-	require_once __DIR__ . '/commands/Translate_Taxonomies_Command.php';
-	require_once __DIR__ . '/commands/Translate_Page_Command.php';
-	require_once __DIR__ . '/commands/Translate_Menu_Command.php';
+    require_once __DIR__ . '/commands/Translate_Taxonomies_Command.php';
+    require_once __DIR__ . '/commands/Translate_Page_Command.php';
+    require_once __DIR__ . '/commands/Translate_Menu_Command.php';
+    require_once __DIR__ . '/commands/Translate_Custom_Post_Command.php';
 
 }
 

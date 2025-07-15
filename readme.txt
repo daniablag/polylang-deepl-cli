@@ -23,9 +23,6 @@ WP-CLI команды для перевода товаров, категорий
 * wp translate-woocommerce - переводит все категории, затем значения аттрибутов, затем все товары.
 * wp translate-custom-post <id> - перевод произвольного типа записи (например popup)
 * wp translate-all-custom-posts <post_type> - массовый перевод всех записей указанного типа
-* wp translate-post-category <term_id> - перевод категории поста по айди
-* wp translate-all-post-categories - перевод всех категорий постов
-
 
 Поддерживает:
 - проверку наличия перевода

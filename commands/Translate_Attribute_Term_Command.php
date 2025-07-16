@@ -12,13 +12,16 @@ WP_CLI::add_command('translate-attribute-value', function ($args) {
         WP_CLI::error("Термин $term_id не является значением атрибута (ожидался taxonomy pa_*).");
     }
 
-    $lang_from = pll_get_term_language($term_id);
+    // ✅ Универсальное назначение языка
+    $lang_from = ensure_polylang_language($term_id, 'term');
     $lang_to   = pll_deepl_get_lang_to();
 
     ensure_language_exists($lang_from);
     ensure_language_exists($lang_to);
 
-    if (pll_get_term($term_id, $lang_to)) {
+    // ✅ Проверка и очистка битой связи
+    $existing_id = ensure_clean_polylang_translation_link($term_id, $lang_to, 'term');
+    if ($existing_id) {
         WP_CLI::success("Перевод уже существует.");
         return;
     }
@@ -38,10 +41,13 @@ WP_CLI::add_command('translate-attribute-value', function ($args) {
 
         $new_term_id = $new_term['term_id'];
 
-        // ✅ Устанавливаем язык нового термина
+        // ✅ Перевод SEO-полей
+        translate_seo_fields($new_term_id, $lang_from, $lang_to);
+
+        // ✅ Установка языка
         pll_set_term_language($new_term_id, $lang_to);
 
-        // ✅ Устанавливаем переводную связь
+        // ✅ Сохранение связи перевода
         pll_save_term_translations([
             $lang_from => $term_id,
             $lang_to   => $new_term_id,

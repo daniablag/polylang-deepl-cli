@@ -125,7 +125,9 @@ function translate_preserving_tags($html, $lang_from, $lang_to) {
 }
 
 if (defined('WP_CLI') && WP_CLI) {
-    require_once __DIR__ . '/commands/Translate_Term_Command.php';
+	require_once __DIR__ . '/includes/polylang_helpers.php';
+	require_once __DIR__ . '/includes/translate_seo_fields.php';
+    require_once __DIR__ . '/commands/Translate_product_category_Command.php';
     require_once __DIR__ . '/commands/Translate_Attribute_Term_Command.php';
 	require_once __DIR__ . '/commands/Translate_Attribute_Command.php';
 	require_once __DIR__ . '/commands/translate-woocommerce.php';
@@ -134,7 +136,7 @@ if (defined('WP_CLI') && WP_CLI) {
     require_once __DIR__ . '/commands/Translate_Page_Command.php';
     require_once __DIR__ . '/commands/Translate_Menu_Command.php';
     require_once __DIR__ . '/commands/Translate_Custom_Post_Command.php';
-
+	
 }
 
 /**

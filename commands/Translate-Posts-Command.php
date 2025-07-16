@@ -9,11 +9,15 @@ WP_CLI::add_command('translate-product', function ($args) {
     }
 
     $lang_from = pll_get_post_language($post_id);
-    $lang_to   = pll_deepl_get_lang_to();
-
-    if (!$lang_from || $lang_from === $lang_to) {
-        WP_CLI::error("Исходный язык не определён или совпадает с целевым.");
+    if (!$lang_from) {
+        $lang_from = ensure_polylang_language($post_id, 'post');
     }
+
+    $lang_to = pll_deepl_get_lang_to();
+    ensure_language_exists($lang_from);
+    ensure_language_exists($lang_to);
+
+    ensure_clean_polylang_translation_link($post_id, 'post', $lang_to);
 
     if (pll_get_post($post_id, $lang_to)) {
         WP_CLI::success("Перевод уже существует.");
@@ -44,11 +48,12 @@ WP_CLI::add_command('translate-product', function ($args) {
     $post_obj = get_post($translated_id);
     do_action('wp_insert_post', $translated_id, $post_obj, false);
 
+    // Копируем все мета, кроме исключённых
     $meta = get_post_meta($post_id);
-    $excluded = [
-        '_edit_lock', '_edit_last', '_yoast_wpseo_title', '_yoast_wpseo_metadesc',
-        '_yoast_wpseo_focuskw', '_aioseo_description', '_aioseo_title'
-    ];
+    $excluded = array_merge(
+        ['_edit_lock', '_edit_last'],
+        get_seo_excluded_meta_keys()
+    );
 
     foreach ($meta as $key => $values) {
         if (in_array($key, $excluded)) continue;
@@ -57,10 +62,12 @@ WP_CLI::add_command('translate-product', function ($args) {
         }
     }
 
+    // Тип товара
     $product_type = wc_get_product($post_id)->get_type();
     wp_set_object_terms($translated_id, $product_type, 'product_type');
     update_post_meta($translated_id, '_product_type', $product_type);
 
+    // Переводим контент
     try {
         $translated_title   = deepl_translate($post->post_title, $lang_from, $lang_to);
         $translated_excerpt = translate_preserving_tags($post->post_excerpt, $lang_from, $lang_to);
@@ -76,18 +83,21 @@ WP_CLI::add_command('translate-product', function ($args) {
         'post_content' => $translated_content,
     ]);
 
+    // Переводим SEO-поля
+    translate_seo_fields($translated_id, $lang_from, $lang_to);
+
+    // Категории
     $terms = wp_get_post_terms($post_id, 'product_cat');
     $translated_terms = [];
     foreach ($terms as $term) {
-        $translated_term = pll_get_term($term->term_id, $lang_to);
-        if ($translated_term) {
-            $translated_terms[] = $translated_term;
-        }
+        $translated = pll_get_term($term->term_id, $lang_to);
+        if ($translated) $translated_terms[] = $translated;
     }
     if (!empty($translated_terms)) {
         wp_set_post_terms($translated_id, $translated_terms, 'product_cat');
     }
 
+    // Атрибуты
     $taxonomies = wc_get_attribute_taxonomies();
     foreach ($taxonomies as $attr) {
         $taxonomy = 'pa_' . $attr->attribute_name;
@@ -104,6 +114,7 @@ WP_CLI::add_command('translate-product', function ($args) {
         }
     }
 
+    // Перевод значений атрибутов по slug
     $attributes = get_post_meta($translated_id, '_product_attributes', true);
     if (is_array($attributes)) {
         foreach ($attributes as $key => &$attr) {
@@ -126,6 +137,7 @@ WP_CLI::add_command('translate-product', function ($args) {
         update_post_meta($translated_id, '_product_attributes', $attributes);
     }
 
+    // Вариации
     $variations = get_children([
         'post_type'   => 'product_variation',
         'post_parent' => $post_id,
@@ -164,35 +176,5 @@ WP_CLI::add_command('translate-product', function ($args) {
         }
     }
 
-    WP_CLI::success("✅ Переведён товар $post_id → $translated_id, с вкладкой доставки и полной структурой");
-});
-
-WP_CLI::add_command('translate-all-products', function () {
-    $lang_to = pll_deepl_get_lang_to();
-    $products = get_posts([
-        'post_type'      => 'product',
-        'posts_per_page' => -1,
-        'post_status'    => 'publish',
-        'lang'           => pll_deepl_get_lang_from()
-    ]);
-
-    foreach ($products as $product) {
-        WP_CLI::log("🔄 Перевод товара ID {$product->ID}");
-        try {
-            WP_CLI::runcommand("translate-product {$product->ID}");
-            sleep(1);
-        } catch (Exception $e) {
-            WP_CLI::warning("⚠️ Ошибка при переводе товара {$product->ID}: " . $e->getMessage());
-
-            // ✅ Логируем ошибку
-            $log_file = WP_CONTENT_DIR . '/translate-errors.log';
-            file_put_contents(
-                $log_file,
-                "[" . date('Y-m-d H:i:s') . "] ID {$product->ID}: " . $e->getMessage() . "\n",
-                FILE_APPEND
-            );
-        }
-    }
-
-    WP_CLI::success("✅ Все товары переведены на {$lang_to}.");
+    WP_CLI::success("✅ Переведён товар $post_id → $translated_id");
 });

@@ -4,7 +4,10 @@ WP_CLI::add_command('translate-attribute-values', function ($args) {
     $attribute_id = (int) $args[0];
 
     global $wpdb;
-    $row = $wpdb->get_row($wpdb->prepare("SELECT attribute_name FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_id = %d", $attribute_id));
+    $row = $wpdb->get_row($wpdb->prepare(
+        "SELECT attribute_name FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_id = %d",
+        $attribute_id
+    ));
 
     if (!$row) {
         WP_CLI::error("Атрибут с ID $attribute_id не найден.");
@@ -43,20 +46,15 @@ function translate_attribute_terms_by_taxonomy($taxonomy) {
     }
 
     $lang_to = pll_deepl_get_lang_to();
-
     $log_file = WP_CONTENT_DIR . '/translation-skipped.log';
 
     foreach ($terms as $term) {
-        $lang_from = pll_get_term_language($term->term_id);
+        $lang_from = ensure_polylang_language($term->term_id, 'term');
+        ensure_language_exists($lang_from);
+        ensure_language_exists($lang_to);
 
-        if (!$lang_from) {
-            $msg = "[" . date('Y-m-d H:i:s') . "] SKIPPED $taxonomy #{$term->term_id} ({$term->name}): язык не найден\n";
-            file_put_contents($log_file, $msg, FILE_APPEND);
-            WP_CLI::log(trim($msg));
-            continue;
-        }
-
-        if (pll_get_term($term->term_id, $lang_to)) {
+        $translated = ensure_clean_polylang_translation_link($term->term_id, $lang_to, 'term');
+        if ($translated) {
             $msg = "[" . date('Y-m-d H:i:s') . "] SKIPPED $taxonomy #{$term->term_id} ({$term->name}): перевод уже существует\n";
             file_put_contents($log_file, $msg, FILE_APPEND);
             WP_CLI::log(trim($msg));
@@ -78,13 +76,17 @@ function translate_attribute_terms_by_taxonomy($taxonomy) {
 
             $new_term_id = $new_term['term_id'];
 
-            // 🔁 Копируем мета-данные термина (Swatches, цвета и прочее)
-            $meta = get_term_meta($term->term_id);
-            foreach ($meta as $meta_key => $values) {
-                foreach ($values as $value) {
-                    update_term_meta($new_term_id, $meta_key, maybe_unserialize($value));
-                }
-            }
+           // 🔁 Копируем все мета-данные термина
+$meta = get_term_meta($term->term_id);
+foreach ($meta as $meta_key => $values) {
+    foreach ($values as $value) {
+        update_term_meta($new_term_id, $meta_key, maybe_unserialize($value));
+    }
+}
+
+// 🧠 Перевод SEO-полей
+WP_CLI::log("🚨 Вызов translate_seo_fields для term $new_term_id ($lang_from → $lang_to)");
+translate_seo_fields($new_term_id, $lang_from, $lang_to);
 
             pll_set_term_language($new_term_id, $lang_to);
             pll_save_term_translations([
